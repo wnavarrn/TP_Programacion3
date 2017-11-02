@@ -3,10 +3,13 @@ use \Psr\Http\Message\ServerRequestInterface as Request;
 use \Psr\Http\Message\ResponseInterface as Response;
 
 require '../composer/vendor/autoload.php';
-require '/clases/AccesoDatos.php';
-require '/clases/cdApi.php';
-require '/clases/MWparaCORS.php';
-require '/clases/MWparaAutentificar.php';
+require 'clases/AccesoDatos.php';
+
+require 'clases/EmpleadoApi.php';
+
+require 'clases/cdApi.php';
+require 'clases/MWparaCORS.php';
+require 'clases/MWparaAutentificar.php';
 
 
 $config['displayErrorDetails'] = true;
@@ -26,6 +29,7 @@ desarrollo para obtener información sobre los errores
 $app = new \Slim\App(["settings" => $config]);
 
 /*LLAMADA A METODOS DE INSTANCIA DE UNA CLASE*/
+/*
 $app->group('/cd', function () {
  
   $this->get('/', \cdApi::class . ':traerTodos')->add(\MWparaCORS::class . ':HabilitarCORSTodos');
@@ -41,21 +45,21 @@ $app->group('/cd', function () {
   $this->put('/', \cdApi::class . ':ModificarUno');
      
 //})->add(\MWparaAutentificar::class . ':VerificarUsuario')->add(\MWparaCORS::class . ':HabilitarCORS8080');
-})->add(\MWparaAutentificar::class . ':GetIp')/*->add(\MWparaAutentificar::class . ':ValidaUsuarioDB')*/->add(\MWparaCORS::class . ':HabilitarCORS8080');
+})->add(\MWparaAutentificar::class . ':GetIp')/*->add(\MWparaAutentificar::class . ':ValidaUsuarioDB')->add(\MWparaCORS::class . ':HabilitarCORS8080');*/
 
 
 /*LLAMADA A METODOS DE INSTANCIA DE LA CLASE EMPLEADO*/
 $app->group('/empleado', function () {
  
-  $this->get('/', \cdApi::class . ':traerTodos');
+  $this->get('/', \EmpleadoApi::class . ':traerTodos');
  
-  $this->get('/{id}', \cdApi::class . ':traerUno');
+  $this->get('/{id}', \EmpleadoApi::class . ':traerUno');
 
-  $this->post('/', \cdApi::class . ':CargarUno');
+  $this->post('/', \EmpleadoApi::class . ':CargarUno');
 
-  $this->delete('/', \cdApi::class . ':BorrarUno');
+  $this->delete('/', \EmpleadoApi::class . ':BorrarUno');
 
-  $this->put('/', \cdApi::class . ':ModificarUno');
+  $this->put('/', \EmpleadoApi::class . ':ModificarUno');
      
 });
 
