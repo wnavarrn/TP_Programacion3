@@ -10,3 +10,8 @@ POST guardar
 
 localhost/Estacionamiento/apirest/empleado/
 check form data
+
+PUT modificar
+body
+localhost/Estacionamiento/apirest/empleado/
+application/x-www-form-urlencoded

@@ -5,9 +5,11 @@ use \Psr\Http\Message\ResponseInterface as Response;
 require '../composer/vendor/autoload.php';
 require 'clases/AccesoDatos.php';
 
-require 'clases/EmpleadoApi.php';
 
-require 'clases/cdApi.php';
+require 'clases/EmpleadoApi.php';
+require 'clases/OperacionApi.php';
+
+
 require 'clases/MWparaCORS.php';
 require 'clases/MWparaAutentificar.php';
 
@@ -29,30 +31,51 @@ desarrollo para obtener información sobre los errores
 $app = new \Slim\App(["settings" => $config]);
 
 /*LLAMADA A METODOS DE INSTANCIA DE UNA CLASE*/
+
+$app->group('/ingreso', function () {
+  $this->post('/', \LoginApi::class . ':TraerUno');   
+});
 /*
-$app->group('/cd', function () {
- 
-  $this->get('/', \cdApi::class . ':traerTodos')->add(\MWparaCORS::class . ':HabilitarCORSTodos');
- 
-  //$this->get('/', \cdApi::class . ':traerTodos')->add(\MWparaAutentificar::class . ':ValidaUsuarioDB');
+$app->post('/ingreso/', function (Request $request, Response $response) {    
+    
+	//$token="";
+  $ArrayDeParametros = $request->getParsedBody();
   
-  $this->get('/{id}', \cdApi::class . ':traerUno')->add(\MWparaCORS::class . ':HabilitarCORSTodos');
+ // var_dump($ArrayDeParametros );
+  if(isset( $ArrayDeParametros['usuario']) && isset( $ArrayDeParametros['clave']) )
+  {
+      $usuario=$ArrayDeParametros['usuario'];
+      $clave= $ArrayDeParametros['clave'];
 
-  $this->post('/', \cdApi::class . ':CargarUno');
 
-  $this->delete('/', \cdApi::class . ':BorrarUno');
-
-  $this->put('/', \cdApi::class . ':ModificarUno');
-     
-//})->add(\MWparaAutentificar::class . ':VerificarUsuario')->add(\MWparaCORS::class . ':HabilitarCORS8080');
-})->add(\MWparaAutentificar::class . ':GetIp')/*->add(\MWparaAutentificar::class . ':ValidaUsuarioDB')->add(\MWparaCORS::class . ':HabilitarCORS8080');*/
-
+      $retorno=array('error'=> "no es usuario valido" );
+      $newResponse = $response->withJson( $retorno ,409); 
+      if(usuario::esValido($usuario,$clave))
+      {
+        $datos=array('usuario'=>$usuario,'clave'=>$clave);
+        $token= AutentificadorJWT::CrearToken($datos);
+        $retorno=array('datos'=> $datos, 'token'=>$token );
+        $newResponse = $response->withJson( $retorno ,200); 
+      }
+      else
+      {
+        $retorno=array('error'=> "no es usuario valido" );
+        $newResponse = $response->withJson( $retorno ,409); 
+      }
+  }else
+  {
+        $retorno=array('error'=> "Faltan los datos del usuario y su clave" );
+        $newResponse = $response->withJson( $retorno ,409); 
+  }
+ 
+	return $newResponse;
+});*/
 
 /*LLAMADA A METODOS DE INSTANCIA DE LA CLASE EMPLEADO*/
 $app->group('/empleado', function () {
  
   $this->get('/', \EmpleadoApi::class . ':traerTodos');
- 
+    
   $this->get('/{id}', \EmpleadoApi::class . ':traerUno');
 
   $this->post('/', \EmpleadoApi::class . ':CargarUno');
@@ -60,6 +83,21 @@ $app->group('/empleado', function () {
   $this->delete('/', \EmpleadoApi::class . ':BorrarUno');
 
   $this->put('/', \EmpleadoApi::class . ':ModificarUno');
+     
+});
+
+/*LLAMADA A METODOS DE INSTANCIA DE LA CLASE OPERACION*/
+$app->group('/operacion', function () {
+ 
+  $this->get('/', \OperacionApi::class . ':traerTodos');
+ 
+  $this->get('/{id}', \OperacionApi::class . ':traerUno');
+
+  $this->post('/', \OperacionApi::class . ':CargarUno');
+
+  $this->delete('/', \OperacionApi::class . ':BorrarUno');
+
+  $this->put('/', \OperacionApi::class . ':ModificarUno');
      
 });
 

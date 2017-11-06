@@ -18,32 +18,36 @@ class EmpleadoApi extends Empleado implements IApiUsable
 
         $todosLosEmpleados=Empleado::TraerTodosLosEmpleados();
      	$response = $response->withJson($todosLosEmpleados, 200);  
-    	return $response;
+    	return $response; 
     }
 
     //inserto un empleado - funciona y guarda foto
 
     public function CargarUno($request, $response, $args) {
 
+
+        $date = date('Y-m-d H:i:s');
+
      	$ArrayDeParametros = $request->getParsedBody();
         $nombre= $ArrayDeParametros['nombre'];
+        $apellido= $ArrayDeParametros['apellido'];
         $clave= $ArrayDeParametros['clave'];
         $perfil= $ArrayDeParametros['perfil'];
         $mail= $ArrayDeParametros['mail'];
         $turno= $ArrayDeParametros['turno'];
-        $sexo= $ArrayDeParametros['sexo'];
-        
+            
         $miempleado = new Empleado();
         $miempleado->nombre=$nombre;
+        $miempleado->apellido=$apellido;
         $miempleado->clave=$clave;
         $miempleado->perfil=$perfil;
         $miempleado->mail=$mail;
         $miempleado->turno=$turno;
-        $miempleado->sexo=$sexo;
+        $miempleado->fecha_creacion= $date;
         $miempleado->InsertarEmpleadoParametros();
 
         $archivos = $request->getUploadedFiles();
-        $destino="./fotos/";
+        $destino="./fotosEmpleados/";
 
         $nombreAnterior=$archivos['foto']->getClientFilename();
         $extension= explode(".", $nombreAnterior);
@@ -82,17 +86,19 @@ class EmpleadoApi extends Empleado implements IApiUsable
      
      public function ModificarUno($request, $response, $args) {
 
+         $date = date('Y-m-d H:i:s');
      	
      	$ArrayDeParametros = $request->getParsedBody();
    	
 	    $miempleado = new Empleado();
 	    $miempleado->id=$ArrayDeParametros['id'];
-	    $miempleado->nombre=$ArrayDeParametros['nombre'];
+        $miempleado->nombre=$ArrayDeParametros['nombre'];
+        $miempleado->nombre=$ArrayDeParametros['apellido'];
 	    $miempleado->clave=$ArrayDeParametros['clave'];
         $miempleado->perfil=$ArrayDeParametros['perfil'];
         $miempleado->perfil=$ArrayDeParametros['mail'];
         $miempleado->turno=$ArrayDeParametros['turno'];
-        $miempleado->sexo=$ArrayDeParametros['sexo'];
+        $miempleado->fecha_creacion= $date;
 
 	   	$resultado =$miempleado->ModificarEmpleadoParametros();
 	   	$objDelaRespuesta= new stdclass();

@@ -5,9 +5,9 @@ require_once 'IApiUsable.php';
 class loginApi extends login implements IApiUsable
 {
  	public function TraerUno($request, $response, $args) {
-         
-        $nombre=$args['nombre'];
-        $tipo=$args['tipo'];
+		 
+        $nombre=$args['usuario'];
+        $tipo=$args['clave'];
 
     	$elUser=login::TraerUnUsuario($nombre,$tipo);
      	$newResponse = $response->withJson($elUser, 200);  
